@@ -24,7 +24,7 @@
 Name: corosync
 Summary: The Corosync Cluster Engine and Application Programming Interfaces
 Version: 2.4.0
-Release: 12.xs+1.2.0
+Release: 12.xs+1.2.0%{dist}
 License: BSD
 Group: System Environment/Base
 URL: http://corosync.github.io/corosync/
