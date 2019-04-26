@@ -23,53 +23,32 @@
 
 Name: corosync
 Summary: The Corosync Cluster Engine and Application Programming Interfaces
-Version: 2.4.0
-Release: 12.xs+1.2.0%{dist}
+Version: 2.4.3
+Release: 13.xs+2.0.0%{?dist}
 License: BSD
 Group: System Environment/Base
 URL: http://corosync.github.io/corosync/
 #Source0: http://build.clusterlabs.org/corosync/releases/%{name}-%{version}%{?gittarver}.tar.gz
-Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/%{name}/archive?at=v%{version}&format=tar.gz&prefix=%{name}-%{version}#/%{name}-%{version}%{?gittarver}.tar.gz
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=1.2.0&format=tar) = d1c93baabbbc7d3b5145f01ffd2377e681fceae1
 
-Patch0: bz1363654-1-Config-Flag-config-uidgid-entries.patch
-Patch1: bz1367813-1-Man-Fix-corosync-qdevice-net-certutil-link.patch
-Patch2: bz1367813-2-man-mention-qdevice-incompatibilites-in-votequorum.5.patch
-Patch3: bz1367813-3-Qnetd-LMS-Fix-two-partition-use-case.patch
-Patch4: bz1371880-1-libvotequorum-Bump-version.patch
-Patch5: bz1371880-2-votequorum-Don-t-update-expected_votes-display-if-va.patch
-Patch6: bz1371880-3-votequorum-simplify-reconfigure-message-handling.patch
-Patch7: bz1371880-4-build-Fix-build-on-RHEL7.3-latest.patch
-Patch8: bz1434528-1-cfg-Prevents-use-of-uninitialized-buffer.patch
-Patch9: bz1434529-1-man-Fix-typos-in-man-page.patch
-Patch10: bz1434529-2-Fix-typo-Destorying-Destroying.patch
-Patch11: bz1434529-3-init-Add-doc-URIs-to-the-systemd-service-files.patch
-Patch12: bz1434529-4-man-Modify-man-page-according-to-command-usage.patch
-Patch13: bz1434528-2-Totempg-remove-duplicate-memcpy-in-mcast_msg-func.patch
-Patch14: bz1434529-5-upstart-Add-softdog-module-loading-example.patch
-Patch15: bz1434529-6-Remove-deprecated-doxygen-flags.patch
-Patch16: bz1434528-3-Remove-redundant-header-file-inclusion.patch
-Patch17: bz1434529-7-Qdevice-fix-spell-errors-in-qdevice.patch
-Patch18: bz1434529-8-doc-document-watchdog_device-parameter.patch
-Patch19: bz1434534-1-Logsys-Change-logsys-syslog_priority-priority.patch
-Patch20: bz1434534-2-logconfig-Do-not-overwrite-logger_subsys-priority.patch
-Patch21: bz1445001-1-Main-Call-mlockall-after-fork.patch
-Patch22: bz1477461-1-main-Add-option-to-set-priority.patch
-Patch23: bz1477461-2-main-Add-support-for-libcgroup.patch
-Patch24: bz1484264-1-totem-Propagate-totem-initialization-failure.patch
-Patch25: bz1484264-2-totemcrypto-Refactor-symmetric-key-importing.patch
-Patch26: bz1484264-3-totemcrypto-Use-different-method-to-import-key.patch
-Patch27: bz1484264-4-totemcrypto-Fix-compiler-warning.patch
-Patch28: votequorum__make_auto-tie-breaker_consistent_on_cluster_membership_changes.patch
-Patch29: config_version_include_self_in_highest_seen.patch
-Patch30: config_version_log_versions.patch
-Patch31: ca269136-honza-pr280-1.patch
-Patch32: ca269136-honza-pr280-2.patch
-Patch33: qdevice_msgio__fix_reading_of_msg_longer_than_i32.patch
-Patch34: totemudp__check_lenght_of_message_to_sent.patch
-Patch35: totemsrp__check_join_and_leave_msg_length.patch
-Patch36: totemsrp__implement_sanity_checks_of_received_msgs.patch
-Patch37: totemcrypto__check_length_of_the_packet.patch
+Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz
+Patch0: SOURCES/corosync/bz1536219-1-logging-Make-blackbox-configurable.patch
+Patch1: SOURCES/corosync/bz1536219-2-logging-Close-before-and-open-blackbox-after-fork.patch
+Patch2: SOURCES/corosync/bz1560467-1-totemcrypto-Check-length-of-the-packet.patch
+
+Patch3: config_version_log_versions.patch
+Patch4: ca269136-honza-pr280-1.patch
+Patch5: ca269136-honza-pr280-2.patch
+Patch6: qdevice_msgio__fix_reading_of_msg_longer_than_i32.patch
+Patch7: totemudp__check_lenght_of_message_to_sent.patch
+Patch8: totemsrp__check_join_and_leave_msg_length.patch
+Patch9: totemsrp__implement_sanity_checks_of_received_msgs.patch
+Patch10: 96354fba72b7e7065610f37df0c0547b1e93ad51.patch
+
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
+
+
 
 %if 0%{?rhel}
 ExclusiveArch: i686 x86_64 s390x ppc64le
@@ -77,7 +56,6 @@ ExclusiveArch: i686 x86_64 s390x ppc64le
 
 # Runtime bits
 Requires: corosynclib = %{version}-%{release}
-Requires: xenserver-libqb >= 1.0.1
 Requires(pre): /usr/sbin/useradd
 Requires(post): /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
@@ -88,7 +66,7 @@ Obsoletes: cman, clusterlib, clusterlib-devel
 
 BuildRequires: git
 BuildRequires: groff
-BuildRequires: xenserver-libqb-devel >= 0.14.2
+BuildRequires: libqb-devel >= 0.14.2
 BuildRequires: nss-devel
 BuildRequires: zlib-devel
 %if %{with runautogen}
@@ -329,6 +307,9 @@ fi
 %if %{with testagents}
 
 %package -n corosync-testagents
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Test Agents
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
@@ -352,6 +333,9 @@ This package contains corosync test agents.
 # library
 #
 %package -n corosynclib
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Libraries
 Group: System Environment/Libraries
 Requires: %{name} = %{version}-%{release}
@@ -376,6 +360,9 @@ This package contains corosync libraries.
 %postun -n corosynclib -p /sbin/ldconfig
 
 %package -n corosynclib-devel
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Development Kit
 Group: Development/Libraries
 Requires: corosynclib = %{version}-%{release}
@@ -429,6 +416,9 @@ The Corosync Cluster Engine APIs.
 %if %{with qdevices}
 
 %package -n corosync-qdevice
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Qdevice
 Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
@@ -495,6 +485,9 @@ fi
 %if %{with qnetd}
 
 %package -n corosync-qnetd
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
+Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Qdevice Network Daemon
 Group: System Environment/Base
 Requires: nss-tools
@@ -562,40 +555,51 @@ fi
 %endif
 
 %changelog
-* Mon Apr 16 2018 Edwin Török <edvin.torok@citrix.com> - 2.4.0-12.xs+1.2.0
+* Fri Oct 19 2018 Liang Dai <liang.dai1@citrix.com> - 2.4.3-13.xs+2.0.0
+- CP-29716: Remove libqb for centos-7.5   
+
+* Mon Apr 16 2018 Edwin Török <edvin.torok@citrix.com> - 2.4.3-12.xs+2.0.0
 - qdevice msgio: Fix reading of msg longer than i32
-- totemcrypto: Check length of the packet
 - totemsrp: Check join and leave msg length
 - totemsrp: Implement sanity checks of received msgs
 - totemudp: Check lenght of message to sent
-
-* Thu Mar 15 2018 Edwin Török <edvin.torok@citrix.com> - 2.4.0-12.xs+1.0.0
 - Use versioned xenserver-corosync Provides
-
-* Fri Feb 16 2018 Mark Syms <mark.syms@citrix.com> - 2.4.0-11.xs-1.0.0
 - Fix auto-tie-breaker reload for CA-265743
 - CP-24481: improve config_version semantics
 - CA-269136: apply upstream fix for votoequorum
 
-* Thu Aug 24 2017 Jan Friesse <jfriesse@redhat.com> 2.4.0-9.2
-- Resolves: rhbz#1484264
+* Mon Feb 05 2018 Jan Friesse <jfriesse@redhat.com> 2.4.3-2
+- Resolves: rhbz#1536219
 
-- totem: Propagate totem initialization failure (rhbz#1484264)
-- merge upstream commit 0413a8f4672352171f0df731b7d9c1fe20acbc4c (rhbz#1484264)
-- totemcrypto: Refactor symmetric key importing (rhbz#1484264)
-- merge upstream commit a885868181c07ba9ab5cdfdad1d66d387b2a4428 (rhbz#1484264)
-- totemcrypto: Use different method to import key (rhbz#1484264)
-- merge upstream commit 5dadebd21862074deaeb9a337fc9e49f5e9f692a (rhbz#1484264)
-- totemcrypto: Fix compiler warning (rhbz#1484264)
-- merge upstream commit fdeed33f514e0056e322a45d9a0a04ca4b9a2709 (rhbz#1484264)
+- logging: Make blackbox configurable (rhbz#1536219)
+- merge upstream commit 8af39f66e56e319b6b93804c0400e6e29737a90f (rhbz#1536219)
+- logging: Close before and open blackbox after fork (rhbz#1536219)
+- merge upstream commit 995ed0bd814ff3eacf6c09534841e6ce39ab6614 (rhbz#1536219)
 
-* Wed Aug 02 2017 Jan Friesse <jfriesse@redhat.com> 2.4.0-9.1
-- Resolves: rhbz#1477461
+* Fri Oct 20 2017 Jan Friesse <jfriesse@redhat.com> 2.4.3-1
+- Resolves: rhbz#1413573
+- Resolves: rhbz#1503008
 
-- main: Add option to set priority (rhbz#1477461)
-- merge upstream commit a008448efb2b1d45c432867caf08f0bcf2b4b9b0 (rhbz#1477461)
-- main: Add support for libcgroup (rhbz#1477461)
-- merge upstream commit c56086c701d08fc17cf6d8ef603caf505a4021b7 (rhbz#1477461)
+* Tue Oct 17 2017 Jan Friesse <jfriesse@redhat.com> 2.4.0-10
+- Resolves: rhbz#1439205
+- Resolves: rhbz#1461450
+- Resolves: rhbz#1469170
+- Resolves: rhbz#1476214
+
+- main: Don't ask libqb to handle segv, it doesn't work (rhbz#1439205)
+- merge upstream commit c0da36a6c0ecf7bc7def252a06336a7088e68086 (rhbz#1439205)
+- totem: Propagate totem initialization failure (rhbz#1461450)
+- merge upstream commit 0413a8f4672352171f0df731b7d9c1fe20acbc4c (rhbz#1461450)
+- totemcrypto: Refactor symmetric key importing (rhbz#1461450)
+- merge upstream commit a885868181c07ba9ab5cdfdad1d66d387b2a4428 (rhbz#1461450)
+- totemcrypto: Use different method to import key (rhbz#1461450)
+- merge upstream commit 5dadebd21862074deaeb9a337fc9e49f5e9f692a (rhbz#1461450)
+- main: Add option to set priority (rhbz#1469170)
+- merge upstream commit a008448efb2b1d45c432867caf08f0bcf2b4b9b0 (rhbz#1469170)
+- main: Add support for libcgroup (rhbz#1476214)
+- merge upstream commit c56086c701d08fc17cf6d8ef603caf505a4021b7 (rhbz#1476214)
+- totemcrypto: Fix compiler warning (rhbz#1461450)
+- merge upstream commit fdeed33f514e0056e322a45d9a0a04ca4b9a2709 (rhbz#1461450)
 
 * Wed Apr 26 2017 Jan Friesse <jfriesse@redhat.com> 2.4.0-9
 - Resolves: rhbz#1445001
