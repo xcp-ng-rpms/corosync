@@ -1,3 +1,8 @@
+%global package_speccommit 61332bccd665657f54c8350257f82d174a2cfa96
+%global usver 2.4.3
+%global xsver 14.xs+2.1.2
+%global xsrel %{xsver}%{?xscount}%{?xshash}
+%global package_srccommit v2.4.3
 # Conditionals
 # Invoke "rpmbuild --without <feature>" or "rpmbuild --with <feature>"
 # to disable or enable specific features
@@ -24,17 +29,14 @@
 Name: corosync
 Summary: The Corosync Cluster Engine and Application Programming Interfaces
 Version: 2.4.3
-Release: 13.xs+2.0.0%{?dist}
+Release: %{?xsrel}%{?dist}
 License: BSD
 Group: System Environment/Base
 URL: http://corosync.github.io/corosync/
-#Source0: http://build.clusterlabs.org/corosync/releases/%{name}-%{version}%{?gittarver}.tar.gz
-
-Source0: https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz
-Patch0: SOURCES/corosync/bz1536219-1-logging-Make-blackbox-configurable.patch
-Patch1: SOURCES/corosync/bz1536219-2-logging-Close-before-and-open-blackbox-after-fork.patch
-Patch2: SOURCES/corosync/bz1560467-1-totemcrypto-Check-length-of-the-packet.patch
-
+Source0: corosync-2.4.3.tar.gz
+Patch0: bz1536219-1-logging-Make-blackbox-configurable.patch
+Patch1: bz1536219-2-logging-Close-before-and-open-blackbox-after-fork.patch
+Patch2: bz1560467-1-totemcrypto-Check-length-of-the-packet.patch
 Patch3: config_version_log_versions.patch
 Patch4: ca269136-honza-pr280-1.patch
 Patch5: ca269136-honza-pr280-2.patch
@@ -43,11 +45,8 @@ Patch7: totemudp__check_lenght_of_message_to_sent.patch
 Patch8: totemsrp__check_join_and_leave_msg_length.patch
 Patch9: totemsrp__implement_sanity_checks_of_received_msgs.patch
 Patch10: 96354fba72b7e7065610f37df0c0547b1e93ad51.patch
-
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
-
+Patch11: non_primary_log_to_warn
+Patch12: CA-354793_more_logging_on_quorum_change
 
 
 %if 0%{?rhel}
@@ -102,6 +101,7 @@ BuildRequires: sed
 %if %{with libcgroup}
 BuildRequires: libcgroup-devel
 %endif
+%{?_cov_buildrequires}
 
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
@@ -109,6 +109,7 @@ Provides: xenserver-%{name} = %{version}-%{release}
 
 %prep
 %autosetup -n %{name}-%{version}%{?gittarver} -p1 -S git
+%{?_cov_prepare}
 
 %build
 %if %{with runautogen}
@@ -123,47 +124,47 @@ export rdmacm_LIBS=-lrdmacm \
 %endif
 %{configure} \
 %if %{with testagents}
-	--enable-testagents \
+    --enable-testagents \
 %endif
 %if %{with watchdog}
-	--enable-watchdog \
+    --enable-watchdog \
 %endif
 %if %{with monitoring}
-	--enable-monitoring \
+    --enable-monitoring \
 %endif
 %if %{with snmp}
-	--enable-snmp \
+    --enable-snmp \
 %endif
 %if %{with dbus}
-	--enable-dbus \
+    --enable-dbus \
 %endif
 %if %{with rdma}
-	--enable-rdma \
+    --enable-rdma \
 %endif
 %if %{with systemd}
-	--enable-systemd \
+    --enable-systemd \
 %endif
 %if %{with upstart}
-	--enable-upstart \
+    --enable-upstart \
 %endif
 %if %{with xmlconf}
-	--enable-xmlconf \
+    --enable-xmlconf \
 %endif
 %if %{with qdevices}
-	--enable-qdevices \
+    --enable-qdevices \
 %endif
 %if %{with qnetd}
-	--enable-qnetd \
+    --enable-qnetd \
 %endif
 %if %{with libcgroup}
-	--enable-libcgroup \
+    --enable-libcgroup \
 %endif
-	--with-initddir=%{_initrddir} \
-	--with-systemddir=%{_unitdir} \
-	--with-upstartdir=%{_sysconfdir}/init \
-	--with-tmpfilesdir=%{_tmpfilesdir}
+    --with-initddir=%{_initrddir} \
+    --with-systemddir=%{_unitdir} \
+    --with-upstartdir=%{_sysconfdir}/init \
+    --with-tmpfilesdir=%{_tmpfilesdir}
 
-make %{_smp_mflags}
+%{?_cov_wrap} make %{_smp_mflags}
 
 %install
 rm -rf %{buildroot}
@@ -210,6 +211,8 @@ sed -i -e 's/^COROSYNC_QNETD_RUNAS=""$/COROSYNC_QNETD_RUNAS="coroqnetd"/' \
 %endif
 %endif
 
+%{?_cov_install}
+
 %clean
 rm -rf %{buildroot}
 
@@ -222,7 +225,7 @@ APIs and libraries, default configuration files, and an init script.
 %systemd_post corosync.service
 %else
 if [ $1 -eq 1 ]; then
-	/sbin/chkconfig --add corosync || :
+    /sbin/chkconfig --add corosync || :
 fi
 %endif
 
@@ -231,14 +234,14 @@ fi
 %systemd_preun corosync.service
 %else
 if [ $1 -eq 0 ]; then
-	/sbin/service corosync stop &>/dev/null || :
-	/sbin/chkconfig --del corosync || :
+    /sbin/service corosync stop &>/dev/null || :
+    /sbin/chkconfig --del corosync || :
 fi
 %endif
 
 %postun
 %if %{with systemd} && 0%{?systemd_postun:1}
-%systemd_postun
+%systemd_postun corosync.service
 %endif
 
 %files
@@ -307,9 +310,6 @@ fi
 %if %{with testagents}
 
 %package -n corosync-testagents
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Test Agents
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
@@ -333,9 +333,6 @@ This package contains corosync test agents.
 # library
 #
 %package -n corosynclib
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Libraries
 Group: System Environment/Libraries
 Requires: %{name} = %{version}-%{release}
@@ -360,9 +357,6 @@ This package contains corosync libraries.
 %postun -n corosynclib -p /sbin/ldconfig
 
 %package -n corosynclib-devel
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Development Kit
 Group: Development/Libraries
 Requires: corosynclib = %{version}-%{release}
@@ -416,9 +410,6 @@ The Corosync Cluster Engine APIs.
 %if %{with qdevices}
 
 %package -n corosync-qdevice
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Qdevice
 Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
@@ -440,7 +431,7 @@ NSS certificates and an init script.
 %systemd_post corosync-qdevice.service
 %else
 if [ $1 -eq 1 ]; then
-	/sbin/chkconfig --add corosync-qdevice || :
+    /sbin/chkconfig --add corosync-qdevice || :
 fi
 %endif
 
@@ -449,14 +440,14 @@ fi
 %systemd_preun corosync-qdevice.service
 %else
 if [ $1 -eq 0 ]; then
-	/sbin/service corosync-qdevice stop &>/dev/null || :
-	/sbin/chkconfig --del corosync-qdevice || :
+    /sbin/service corosync-qdevice stop &>/dev/null || :
+    /sbin/chkconfig --del corosync-qdevice || :
 fi
 %endif
 
 %postun -n corosync-qdevice
 %if %{with systemd} && 0%{?systemd_postun:1}
-%systemd_postun
+%systemd_postun corosync-qdevice.service
 %endif
 
 %files -n corosync-qdevice
@@ -485,9 +476,6 @@ fi
 %if %{with qnetd}
 
 %package -n corosync-qnetd
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XS/repos/corosync.pg/archive?at=2.0.0&format=tar#/corosync-2.0.0.pg.tar) = 05a25775c3cd5f2f8a3c076842acc627eb0e77aa
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync/archive?at=v2.4.3&format=tar.gz&prefix=corosync-2.4.3#/corosync-2.4.3.tar.gz) = e37c701c041da0d16ca4d21e57059378224f46a8
-Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos/corosync.centos/archive?at=imports%2Fc7%2Fcorosync-2.4.3-2.el7_5.1&format=tar.gz#/corosync-2.4.3.centos.tar.gz) = 3c203fa5a563721eff3787c23fc00ccdce966ceb
 Summary: The Corosync Cluster Engine Qdevice Network Daemon
 Group: System Environment/Base
 Requires: nss-tools
@@ -514,7 +502,7 @@ exit 0
 %systemd_post corosync-qnetd.service
 %else
 if [ $1 -eq 1 ]; then
-	/sbin/chkconfig --add corosync-qnetd || :
+    /sbin/chkconfig --add corosync-qnetd || :
 fi
 %endif
 
@@ -523,14 +511,14 @@ fi
 %systemd_preun corosync-qnetd.service
 %else
 if [ $1 -eq 0 ]; then
-	/sbin/service corosync-qnetd stop &>/dev/null || :
-	/sbin/chkconfig --del corosync-qnetd || :
+    /sbin/service corosync-qnetd stop &>/dev/null || :
+    /sbin/chkconfig --del corosync-qnetd || :
 fi
 %endif
 
 %postun -n corosync-qnetd
 %if %{with systemd} && 0%{?systemd_postun:1}
-%systemd_postun
+%systemd_postun corosync-qnetd.service
 %endif
 
 %files -n corosync-qnetd
@@ -554,9 +542,22 @@ fi
 %{_mandir}/man8/corosync-qnetd.8*
 %endif
 
+%{?_cov_results_package}
+
 %changelog
+* Wed Oct 13 2021 Mark Syms <mark.syms@citrix.com> - 2.4.3-14.xs+2.1.2
+- CP-34143: add coverity macros
+- CP-34143: define status analysis
+- CA-354793 Slightly increase logging on quorum change
+
+* Fri Oct 16 2020 Mark Syms <mark.syms@citrix.com> - 2.4.3-14.xs+2.1.0
+- Provide service name to systemd_postun
+
+* Mon Oct 12 2020 Mark Syms <mark.syms@citrix.com> - 2.4.3-13.xs+2.1.0
+- Log non-primary partition at warning
+
 * Fri Oct 19 2018 Liang Dai <liang.dai1@citrix.com> - 2.4.3-13.xs+2.0.0
-- CP-29716: Remove libqb for centos-7.5   
+- CP-29716: Remove libqb for centos-7.5
 
 * Mon Apr 16 2018 Edwin Török <edvin.torok@citrix.com> - 2.4.3-12.xs+2.0.0
 - qdevice msgio: Fix reading of msg longer than i32
@@ -1191,7 +1192,7 @@ fi
 - spec file updates:
   * Drop alpha tag
   * Drop local patches (no longer required)
-  * Allow to build from svn trunk by supporting rpmbuild --with buildtrunk 
+  * Allow to build from svn trunk by supporting rpmbuild --with buildtrunk
   * BuildRequires autoconf automake if building from trunk
   * Execute autogen.sh if building from trunk and if no configure is available
   * Switch to use rpm configure macro and set standard install paths
